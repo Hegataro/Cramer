@@ -279,9 +279,9 @@ namespace Cramer {
 		private void GenButton_Click(object sender, EventArgs e) {
 			Random rand=new Random();
 			for (int i=0; i<Varboxes.Count; i++) {
-				Resultboxes[i].Value=(rand.Next(2001)-1000)/Varboxes.Count;
+				Resultboxes[i].Value=rand.Next(201)-100;
 				for (int j=0; j<Varboxes.Count; j++) {
-					Varboxes[i][j].Value=(rand.Next(2001)-1000)/Varboxes.Count;
+					Varboxes[i][j].Value=rand.Next(201)-100;
 				}
 			}
 			Calculate();
