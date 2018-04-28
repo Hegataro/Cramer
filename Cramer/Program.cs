@@ -225,7 +225,7 @@ namespace Cramer {
 		
 		private string Convert(double input) {
 			int i=0;
-			if (input!=0) {
+			if (input!=0 && (Math.Abs(input)>1000 || Math.Abs(input)<0.001)) {
 				if (Math.Abs(input)<1) {
 					while (Math.Abs(input)<1) {
 						input*=10;
