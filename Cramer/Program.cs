@@ -133,7 +133,37 @@ namespace Cramer {
 			Varboxes=new List<List<NumericUpDown>>();
 			Resultboxes=new List<NumericUpDown>();
 			
-			ResetUI(3);
+			for (int i=0; i<SizeNumeric.Maximum; i++) {
+				VarLabels.Add(new Label{ 
+				              	Size=new Size( 65, 22), 
+				              	Location=new Point( 66*(i+1)+11, 5), 
+				              	TextAlign=ContentAlignment.MiddleCenter}
+				              );
+				
+				Resultboxes.Add(new NumericUpDown{ 
+				                	Size=new Size( 65, 22), 
+				                	Location=new Point( 0, 23*(i+1)+5), 
+				                	TextAlign=HorizontalAlignment.Right, 
+				                	Minimum=-10000, 
+				                	Maximum=10000, 
+				                	Increment=1, 
+				                	Value=0}
+				                );
+				Varboxes.Add(new List<NumericUpDown>());
+				for (int j=0; j<SizeNumeric.Maximum; j++) {
+					Varboxes[i].Add(new NumericUpDown{ 
+					                	Size=new Size( 65, 22), 
+					                	Location=new Point( 66*(j+1)+11,23*(i+1)+5),
+					                	TextAlign=HorizontalAlignment.Right, 
+					                	Minimum=-10000, 
+					                	Maximum=10000, 
+					                	Increment=1, 
+					                	Value=0
+					                });
+				}
+			}
+			ResetUI( (int)SizeNumeric.Maximum, 0);
+			ResetUI( (int)SizeNumeric.Minimum, (int)SizeNumeric.Maximum);
 			
 			Controls.Add(SizeNumeric);
 			Controls.Add(SizeButton);
@@ -146,9 +176,9 @@ namespace Cramer {
 		 * 
 		 */
 		private void TextConvert() {
-			for (int i=0; i<Varboxes.Count; i++) {
+			for (int i=0; i<CalculatedMatrix.Equations.Count; i++) {
 				CalculatedMatrix.Equations[i].Result=(double)Resultboxes[i].Value;
-				for (int j=0; j<Varboxes[i].Count; j++) {
+				for (int j=0; j<CalculatedMatrix.Equations[i].Vars.Count; j++) {
 					CalculatedMatrix.Equations[i].Vars[j]=(double)Varboxes[i][j].Value;
 				}
 			}
@@ -157,55 +187,41 @@ namespace Cramer {
 		/**
 		 * 
 		 */
-		private void ResetUI(int target) {
-			int curr=Varboxes.Count;
+		private void ResetUI(int target, int curr) {
 			DeterminantLabel.Location=new Point( 66*(target+1)+21, 5);
 			MaximumSize=new Size(66*(target+2)+31, 23*(target+2)+14);
 			MinimumSize=new Size(66*(target+2)+31, 23*(target+2)+14);
-			for (int i=0; i<curr; i++) {
-				Controls.Remove(Resultboxes[curr-(1+i)]);
-				Controls.Remove(VarLabels[curr-(1+i)]);
-				for (int j=0; j<curr; j++) {
-					Controls.Remove(Varboxes[curr-(1+i)][j]);
+			if (curr>target) {
+				for (int i=0; i<curr; i++) {
+					if (i>target-1) {
+						Controls.Remove(Resultboxes[i]);
+						Controls.Remove(VarLabels[i]);
+					}
+					for (int j=0; j<curr; j++) {
+						if (i>(target-1) || j>(target-1)) {
+							Controls.Remove(Varboxes[i][j]);
+						}
+					}
 				}
-				Varboxes[curr-(1+i)].Clear();
-			}
-			Resultboxes.Clear();
-			VarLabels.Clear();
-			Varboxes.Clear();
-			
-			for (int i=0; i<target; i++) {
-				VarLabels.Add(new Label{ 
-				              	Size=new Size( 65, 22), 
-				              	Location=new Point( 66*(i+1)+11, 5), 
-				              	TextAlign=ContentAlignment.MiddleCenter}
-				              );
-				Controls.Add(VarLabels[i]);
-				Resultboxes.Add(new NumericUpDown{ 
-				                	Size=new Size( 65, 22), 
-				                	Location=new Point( 66*(target+1)+21, 23*(i+1)+5), 
-				                	TextAlign=HorizontalAlignment.Right, 
-				                	Minimum=-10000, 
-				                	Maximum=10000, 
-				                	Increment=1, 
-				                	Value=(decimal)CalculatedMatrix.Equations[i].Result}
-				                );
-				Controls.Add(Resultboxes[i]);
-				Varboxes.Add(new List<NumericUpDown>());
-			}
-			for (int i=0; i<target; i++) {
-				for (int j=0; j<target; j++) {
-					Varboxes[i].Add(new NumericUpDown{ 
-					                	Size=new Size( 65, 22), 
-					                	Location=new Point( 66*(j+1)+11,23*(i+1)+5),
-					                	TextAlign=HorizontalAlignment.Right, 
-					                	Minimum=-10000, 
-					                	Maximum=10000, 
-					                	Increment=1, 
-					                	Value=(decimal)CalculatedMatrix.Equations[i].Vars[j]
-					                });
-					Controls.Add(Varboxes[i][j]);
+			} else if (curr<target) {
+				for (int i=0; i<target; i++) {
+					if (!Controls.Contains(Resultboxes[i])) {
+						Controls.Add(Resultboxes[i]);
+					}
+					if (!Controls.Contains(VarLabels[i])) {
+						Controls.Add(VarLabels[i]);
+					}
 				}
+				for (int i=0; i<target; i++) {
+					for (int j=0; j<target; j++) {
+						if (!Controls.Contains(Varboxes[i][j])) {
+							Controls.Add(Varboxes[i][j]);
+						}
+					}
+				}
+			}
+			for (int i=0; i<(int)SizeNumeric.Value; i++) {
+				Resultboxes[i].Location=new Point(66*(target+1)+21, Resultboxes[i].Location.Y);
 			}
 			
 			Calculate();
@@ -252,8 +268,9 @@ namespace Cramer {
 		 * 
 		 */
 		private void SizeButton_Click(object sender, EventArgs e) {
+			int temp=CalculatedMatrix.Equations.Count;
 			CalculatedMatrix.Update(Decimal.ToInt32(SizeNumeric.Value));
-			ResetUI(Decimal.ToInt32(SizeNumeric.Value));
+			ResetUI(Decimal.ToInt32(SizeNumeric.Value), temp);
 		}
 		
 		/**
