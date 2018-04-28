@@ -1,0 +1,5 @@
+D:\Documents\SharpDevelop Projects\Cramer\Cramer\obj\Debug\Cramer.csprojResolveAssemblyReference.cache
+D:\Documents\SharpDevelop Projects\Cramer\Cramer\bin\Debug\Cramer.exe
+D:\Documents\SharpDevelop Projects\Cramer\Cramer\bin\Debug\Cramer.pdb
+D:\Documents\SharpDevelop Projects\Cramer\Cramer\obj\Debug\Cramer.exe
+D:\Documents\SharpDevelop Projects\Cramer\Cramer\obj\Debug\Cramer.pdb
