@@ -16,10 +16,10 @@ namespace Cramer {
 	 * 
 	 */
 	public class Equation {
-		public List<decimal> Vars;
-		public decimal Result;
-		public Equation(int num, decimal result) {
-			Vars=new List<decimal>();
+		public List<double> Vars;
+		public double Result;
+		public Equation(int num, double result) {
+			Vars=new List<double>();
 			for (int i=0; i<num; i++) Vars.Add(0);
 			Result=result;
 		}
@@ -45,7 +45,6 @@ namespace Cramer {
 	 */
 	public class Matrix {
 		public List<Equation> Equations;
-		public decimal Determinant;
 		public Matrix(int num) {
 			Equations=new List<Equation>();
 			for (int i=0; i<num; i++) Equations.Add(new Equation(num, 0));
@@ -87,6 +86,7 @@ namespace Cramer {
 		public MatrixForm() {
 			CalculatedMatrix=new Matrix(3);
 			
+			Text="Cramer's Rule Calculator";
 			FormBorderStyle=FormBorderStyle.FixedSingle;
 			
 			SizeNumeric=new NumericUpDown {
@@ -95,7 +95,7 @@ namespace Cramer {
 				
 				Value=3,
 				Minimum=3,
-				Maximum=10,
+				Maximum=100,
 				Increment=1
 			};
 			
@@ -145,9 +145,9 @@ namespace Cramer {
 		 */
 		private void TextConvert() {
 			for (int i=0; i<Varboxes.Count; i++) {
-				CalculatedMatrix.Equations[i].Result=Resultboxes[i].Value;
+				CalculatedMatrix.Equations[i].Result=(double)Resultboxes[i].Value;
 				for (int j=0; j<Varboxes[i].Count; j++) {
-					CalculatedMatrix.Equations[i].Vars[j]=Varboxes[i][j].Value;
+					CalculatedMatrix.Equations[i].Vars[j]=(double)Varboxes[i][j].Value;
 				}
 			}
 		}
@@ -186,7 +186,7 @@ namespace Cramer {
 				                	Minimum=-10000, 
 				                	Maximum=10000, 
 				                	Increment=1, 
-				                	Value=CalculatedMatrix.Equations[i].Result}
+				                	Value=(decimal)CalculatedMatrix.Equations[i].Result}
 				                );
 				Controls.Add(Resultboxes[i]);
 				Varboxes.Add(new List<NumericUpDown>());
@@ -200,7 +200,7 @@ namespace Cramer {
 					                	Minimum=-10000, 
 					                	Maximum=10000, 
 					                	Increment=1, 
-					                	Value=CalculatedMatrix.Equations[i].Vars[j]
+					                	Value=(decimal)CalculatedMatrix.Equations[i].Vars[j]
 					                });
 					Controls.Add(Varboxes[i][j]);
 				}
@@ -215,10 +215,35 @@ namespace Cramer {
 		private void Calculate() {
 			TextConvert();
 			for (int i=0; i<CalculatedMatrix.Equations.Count; i++) {
-				VarLabels[i].Text=CalcVar(i).ToString();
+				VarLabels[i].Text=Convert(CalcVar(i));
 				
 			}
-			DeterminantLabel.Text=CalcDeterminant(CalculatedMatrix).ToString();
+			DeterminantLabel.Text=Convert(CalcDeterminant(CalculatedMatrix));
+		}
+		
+		private string Convert(double input) {
+			int i=0;
+			if (input!=0) {
+				if (Math.Abs(input)<1) {
+					while (Math.Abs(input)<1) {
+						input*=10;
+						i--;
+					}
+				} else if (Math.Abs(input)>10) {
+					while (Math.Abs(input)>10) {
+						input/=10;
+						i++;
+					}
+				}
+			}
+			
+			if (i==0) {
+				return Math.Round(input, 3).ToString();
+			} else if (i>0) {
+				return Math.Round(input, 3).ToString()+"E+"+i.ToString();
+			} else {
+				return Math.Round(input, 3).ToString()+'E'+i.ToString();
+			}
 		}
 		
 		/**
@@ -235,17 +260,12 @@ namespace Cramer {
 		private void GenButton_Click(object sender, EventArgs e) {
 			Random rand=new Random();
 			for (int i=0; i<Varboxes.Count; i++) {
-				Resultboxes[i].Value=rand.Next(201)-100;
+				Resultboxes[i].Value=(rand.Next(2001)-1000)/SizeNumeric.Value;
 				for (int j=0; j<Varboxes.Count; j++) {
-					Varboxes[i][j].Value=rand.Next(201)-100;
+					Varboxes[i][j].Value=(rand.Next(2001)-1000)/SizeNumeric.Value;
 				}
 			}
 			Calculate();
-			for (int i=0; i<VarLabels.Count; i++) {
-				Console.WriteLine("{0}: {1}", i, VarLabels[i].Text);
-			}
-			Console.WriteLine("D: {0}", DeterminantLabel.Text);
-			Console.WriteLine("___________________________________________________________________");
 		}
 		
 		/**
@@ -258,9 +278,9 @@ namespace Cramer {
 		/**
 		 * 
 		 */
-		private decimal CalcDeterminant(Matrix matrix) {
-			decimal returned=0;
-			decimal current=1;
+		private double CalcDeterminant(Matrix matrix) {
+			double returned=0;
+			double current=1;
 			
 			for (int i=0; i<matrix.Equations.Count*2; i++) {
 				current=1;
@@ -283,7 +303,7 @@ namespace Cramer {
 		/**
 		 * 
 		 */
-		private decimal CalcVar(int num) {
+		private double CalcVar(int num) {
 			Matrix matrix=new Matrix(CalculatedMatrix.Equations.Count);
 			
 			for (int i=0; i<CalculatedMatrix.Equations.Count; i++) {
@@ -293,7 +313,7 @@ namespace Cramer {
 				}
 			}
 			
-			decimal determinant=CalcDeterminant(matrix);
+			double determinant=CalcDeterminant(matrix);
 			if (determinant!=0) {
 				for (int i=0; i<matrix.Equations.Count; i++) {
 					matrix.Equations[i].Vars[num]=matrix.Equations[i].Result;
