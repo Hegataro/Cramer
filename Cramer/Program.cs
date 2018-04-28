@@ -97,7 +97,7 @@ namespace Cramer {
 				
 				Value=3,
 				Minimum=3,
-				Maximum=100,
+				Maximum=25,
 				Increment=1
 			};
 			
@@ -262,9 +262,9 @@ namespace Cramer {
 		private void GenButton_Click(object sender, EventArgs e) {
 			Random rand=new Random();
 			for (int i=0; i<Varboxes.Count; i++) {
-				Resultboxes[i].Value=(rand.Next(2001)-1000)/SizeNumeric.Value;
+				Resultboxes[i].Value=(rand.Next(2001)-1000)/Varboxes.Count;
 				for (int j=0; j<Varboxes.Count; j++) {
-					Varboxes[i][j].Value=(rand.Next(2001)-1000)/SizeNumeric.Value;
+					Varboxes[i][j].Value=(rand.Next(2001)-1000)/Varboxes.Count;
 				}
 			}
 			Calculate();
