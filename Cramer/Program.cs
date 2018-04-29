@@ -75,9 +75,7 @@ namespace Cramer {
 		
 		private Matrix CalculatedMatrix;
 		private NumericUpDown SizeNumeric;
-		private Button SizeButton;
 		private Button GenButton;
-		private Button CalcButton;
 		private List<Label> VarLabels;
 		private Label DeterminantLabel;
 		private List<List<NumericUpDown>> Varboxes;
@@ -100,27 +98,15 @@ namespace Cramer {
 				Maximum=25,
 				Increment=1
 			};
+			SizeNumeric.ValueChanged+=Numeric_Change;
 			
-			SizeButton=new Button {
-				Location=new Point( 5, SizeNumeric.Location.Y+23),
-				Size=new Size( 65, 22),
-				Text="Update"
-			};
-			SizeButton.Click+=SizeButton_Click;
 			
 			GenButton=new Button {
-				Location=new Point( 5, SizeButton.Location.Y+23),
+				Location=new Point( 5, SizeNumeric.Location.Y+23),
 				Size=new Size( 65, 22),
 				Text="Generate"
 			};
 			GenButton.Click+=GenButton_Click;
-			
-			CalcButton=new Button {
-				Location=new Point( 5, GenButton.Location.Y+23),
-				Size=new Size( 65, 22),
-				Text="Calculate"
-			};
-			CalcButton.Click+=CalcButton_Click;
 			
 			DeterminantLabel=new Label {
 				Location=new Point( 66*4+16, 5),
@@ -149,6 +135,7 @@ namespace Cramer {
 				                	Increment=1, 
 				                	Value=0}
 				                );
+				Resultboxes[Resultboxes.Count-1].ValueChanged+=Numeric_Change;
 				Varboxes.Add(new List<NumericUpDown>());
 				for (int j=0; j<SizeNumeric.Maximum; j++) {
 					Varboxes[i].Add(new NumericUpDown{ 
@@ -160,15 +147,14 @@ namespace Cramer {
 					                	Increment=1, 
 					                	Value=0
 					                });
+					Varboxes[i][Varboxes[i].Count-1].ValueChanged+=Numeric_Change;
 				}
 			}
 			ResetUI( (int)SizeNumeric.Maximum, 0);
 			ResetUI( (int)SizeNumeric.Minimum, (int)SizeNumeric.Maximum);
 			
 			Controls.Add(SizeNumeric);
-			Controls.Add(SizeButton);
 			Controls.Add(GenButton);
-			Controls.Add(CalcButton);
 			Controls.Add(DeterminantLabel);
 		}
 		
@@ -267,15 +253,6 @@ namespace Cramer {
 		/**
 		 * 
 		 */
-		private void SizeButton_Click(object sender, EventArgs e) {
-			int temp=CalculatedMatrix.Equations.Count;
-			CalculatedMatrix.Update(Decimal.ToInt32(SizeNumeric.Value));
-			ResetUI(Decimal.ToInt32(SizeNumeric.Value), temp);
-		}
-		
-		/**
-		 * 
-		 */
 		private void GenButton_Click(object sender, EventArgs e) {
 			Random rand=new Random();
 			for (int i=0; i<Varboxes.Count; i++) {
@@ -290,8 +267,10 @@ namespace Cramer {
 		/**
 		 * 
 		 */
-		private void CalcButton_Click(object sender, EventArgs e) {
-			Calculate();
+		private void Numeric_Change(object sender, EventArgs e) {
+			int temp=CalculatedMatrix.Equations.Count;
+			CalculatedMatrix.Update(Decimal.ToInt32(SizeNumeric.Value));
+			ResetUI(Decimal.ToInt32(SizeNumeric.Value), temp);
 		}
 		
 		/**
