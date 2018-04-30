@@ -254,6 +254,7 @@ namespace Cramer {
 		 * 
 		 */
 		private void GenButton_Click(object sender, EventArgs e) {
+			GenButton.Enabled=false;
 			Random rand=new Random();
 			for (int i=0; i<Varboxes.Count; i++) {
 				Resultboxes[i].Value=rand.Next(201)-100;
@@ -262,6 +263,7 @@ namespace Cramer {
 				}
 			}
 			Calculate();
+			GenButton.Enabled=true;
 		}
 		
 		/**
