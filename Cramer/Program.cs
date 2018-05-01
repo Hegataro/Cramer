@@ -1,11 +1,14 @@
-﻿/**
- * Created by SharpDevelop.
- * User: Hegataro
- * Date: 27.04.2018
- * Time: 13:01
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
+/**
+ * \mainpage Programová dokumentace 
+ * \author Hegataro
+ * \date 27.04.2018
+ * \detail Zadání: Cramerovo pravidlo - konzolová aplikace s následujícími vlastnostmi
+ *   - Uživatel může nastavit velikost a parametry matice
+ *   - Uživatel může náhodně vygenerova čísla v matici
+ *   - Výsledek determinantu matice
+ *
+ * Zdrojové kódy jsou zapsány ve znakové sadě UTF-8
+ * */
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -13,19 +16,24 @@ using System.Drawing;
 
 namespace Cramer {
 	/**
-	 * 
+	 * \brief Třída Equation charakterizující rovnice
 	 */
 	public class Equation {
-		public List<double> Vars;
-		public double Result;
+		public List<double> Vars; /**< Seznam promněnných*/
+		public double Result; /**< Výsledek */
+		/**
+		 * \brief Konstruktor třídy Equation
+		 * \param num Počet promněnných
+		 * \param result Výsledek
+		 */
 		public Equation(int num, double result) {
 			Vars=new List<double>();
 			for (int i=0; i<num; i++) Vars.Add(0);
 			Result=result;
 		}
 		/**
-		 * Updates the Equation to a set size, removing or adding elements as seen fit
-		 * input: the number to which the Equation's size should be set
+		 * \brief Metoda Update určená k aktualizaci matice na nastavenou velikost, odebírá nebo přidává prvky podle potřeby
+		 * \param num Počet promněnných
 		 */
 		public void Update(int num) {
 			if (Vars.Count>num) {
@@ -41,17 +49,21 @@ namespace Cramer {
 	}
 	
 	/**
-	 * 
+	 * \brief Třída charakterizující matici
 	 */
 	public class Matrix {
-		public List<Equation> Equations;
+		public List<Equation> Equations; /** Seznam rovnic*/
+		/**
+		 * \brief Konstruktor třídy Matrix
+		 * \param num Počet promněnných
+		 */
 		public Matrix(int num) {
 			Equations=new List<Equation>();
 			for (int i=0; i<num; i++) Equations.Add(new Equation(num, 0));
 		}
 		/**
-		 * Updates the Matrix to a set size, removing or adding elements as seen fit
-		 * input: the number to which the Matrix' size should be set
+		 * \brief Metoda Update určená k aktualizaci matice na nastavenou velikost, odebírá nebo přidává prvky podle potřeby
+		 * \param num Počet promněnných
 		 */
 		public void Update(int num) {
 			if (Equations.Count>num) {
@@ -69,7 +81,7 @@ namespace Cramer {
 	}
 	
 	/**
-	 * 
+	 * \brief Třída pro 
 	 */
 	public class MatrixForm : Form {
 		
@@ -159,7 +171,7 @@ namespace Cramer {
 		}
 		
 		/**
-		 * 
+		 * \brief Metoda TextConvert konvertuje obsah textboxů do matice
 		 */
 		private void TextConvert() {
 			for (int i=0; i<CalculatedMatrix.Equations.Count; i++) {
@@ -171,7 +183,7 @@ namespace Cramer {
 		}
 		
 		/**
-		 * 
+		 * \brief Metoda ResetUI zmenšuje a zvětšuje matici
 		 */
 		private void ResetUI(int target, int curr) {
 			DeterminantLabel.Location=new Point( 66*(target+1)+21, 5);
@@ -214,7 +226,7 @@ namespace Cramer {
 		}
 		
 		/**
-		 * 
+		 * \brief Metoda Calculate počítá promněnné a determinant
 		 */
 		private void Calculate() {
 			TextConvert();
@@ -225,6 +237,11 @@ namespace Cramer {
 			DeterminantLabel.Text=Convert(CalcDeterminant(CalculatedMatrix));
 		}
 		
+		/**
+		 * \brief Metoda Convert konvertuje čísla, které jsou příliš malé nebo příliš velké
+		 * \param input Číslo, které se konvertuje
+		 * \return Vrací konvertované číslo ve formě string
+		 */
 		private string Convert(double input) {
 			int i=0;
 			if (input!=0 && (Math.Abs(input)>=1000 || Math.Abs(input)<=0.001)) {
@@ -251,7 +268,7 @@ namespace Cramer {
 		}
 		
 		/**
-		 * 
+		 * \brief Metoda GenButton_CLick generuje náhodné hodnoty
 		 */
 		private void GenButton_Click(object sender, EventArgs e) {
 			GenButton.Enabled=false;
@@ -267,7 +284,7 @@ namespace Cramer {
 		}
 		
 		/**
-		 * 
+		 * \brief Metoda NUmeric_Change aktualizuje celou matici
 		 */
 		private void Numeric_Change(object sender, EventArgs e) {
 			int temp=CalculatedMatrix.Equations.Count;
@@ -276,7 +293,9 @@ namespace Cramer {
 		}
 		
 		/**
-		 * 
+		 * \brief Metoda CalcDeterminant vypočítá determinant
+		 * \param matrix Matice, která se počítá
+		 * \return Vrací determinant zadané matice
 		 */
 		private double CalcDeterminant(Matrix matrix) {
 			double returned=0;
@@ -301,7 +320,9 @@ namespace Cramer {
 		}
 		
 		/**
-		 * 
+		 * \brief Metoda CalcVar vypočítá jednu promněnnou
+		 * \param num Kolikátá proměnná se počítá
+		 * \return Vrací hodnotu proměnné
 		 */
 		private double CalcVar(int num) {
 			Matrix matrix=new Matrix(CalculatedMatrix.Equations.Count);
@@ -325,6 +346,9 @@ namespace Cramer {
 		}
 	}
 	
+	/*
+	 * \brief Hlavní funkce programu
+	 */
 	class Program {
 		public static void Main(string[] args) {
 			MatrixForm form=new MatrixForm();
