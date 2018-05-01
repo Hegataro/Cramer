@@ -19,8 +19,12 @@ namespace Cramer {
 	 * \brief Třída Equation charakterizující rovnice
 	 */
 	public class Equation {
-		public List<double> Vars; /**< Seznam promněnných*/
-		public double Result; /**< Výsledek */
+		/**
+		 * \property Vars Seznam proměnných
+	 	 * \property Result Výsledek
+	     */
+		public List<double> Vars;
+		public double Result;
 		/**
 		 * \brief Konstruktor třídy Equation
 		 * \param num Počet promněnných
@@ -81,7 +85,7 @@ namespace Cramer {
 	}
 	
 	/**
-	 * \brief Třída pro 
+	 * \brief Třída pro uživatelské rozhraní
 	 */
 	public class MatrixForm : Form {
 		
@@ -92,7 +96,9 @@ namespace Cramer {
 		private Label DeterminantLabel;
 		private List<List<NumericUpDown>> Varboxes;
 		private List<NumericUpDown> Resultboxes;
-		
+		/**
+		 * \brief Konstruktor třídy MatrixForm
+		 */
 		public MatrixForm() {
 			
 			
@@ -184,6 +190,8 @@ namespace Cramer {
 		
 		/**
 		 * \brief Metoda ResetUI zmenšuje a zvětšuje matici
+		 * \param target Požadovaná velikost matice
+		 * \param curr Nynější velikost matice
 		 */
 		private void ResetUI(int target, int curr) {
 			DeterminantLabel.Location=new Point( 66*(target+1)+21, 5);
@@ -284,7 +292,7 @@ namespace Cramer {
 		}
 		
 		/**
-		 * \brief Metoda NUmeric_Change aktualizuje celou matici
+		 * \brief Metoda Numeric_Change aktualizuje celou matici
 		 */
 		private void Numeric_Change(object sender, EventArgs e) {
 			int temp=CalculatedMatrix.Equations.Count;
@@ -318,7 +326,6 @@ namespace Cramer {
 			}
 			return returned;
 		}
-		
 		/**
 		 * \brief Metoda CalcVar vypočítá jednu promněnnou
 		 * \param num Kolikátá proměnná se počítá
@@ -345,7 +352,6 @@ namespace Cramer {
 			}
 		}
 	}
-	
 	/*
 	 * \brief Hlavní funkce programu
 	 */
